@@ -30,7 +30,7 @@ struct Entry: Codable, Equatable, Identifiable, FetchableRecord, PersistableReco
         case id, type, name, city, country, timezoneIdentifier, flag, photoData
     }
 
-    init(id: Int64 = Int64.random(in: 1 ... 99999), type: EntryType, name: String, city: String, timezoneIdentifier: String, flag: String? = nil, photoData: String? = nil) {
+    init(id: Int64, type: EntryType, name: String, city: String, timezoneIdentifier: String, flag: String? = nil, photoData: String? = nil) {
         self.id = id
         self.type = type
         self.name = name
@@ -44,6 +44,16 @@ struct Entry: Codable, Equatable, Identifiable, FetchableRecord, PersistableReco
 
     enum CodingKeys: String, CodingKey {
         case id, type, name, city, timezoneIdentifier, flag, photoData
+    }
+
+    var secondsFromLocal: Int {
+        guard let entryTimeZone = TimeZone(identifier: timezoneIdentifier) else {
+            return 0
+        }
+
+        let currentDate = Date()
+
+        return entryTimeZone.secondsFromGMT(for: currentDate) - TimeZone.current.secondsFromGMT(for: currentDate)
     }
 
     var timeDifference: (hours: Int, minutes: Int, dayPeriod: DayPeriod) {
@@ -92,5 +102,17 @@ struct Entry: Codable, Equatable, Identifiable, FetchableRecord, PersistableReco
 
     var timeIcon: String {
         return timeDifference.dayPeriod.rawValue
+    }
+
+    func deletePhotoFile() {
+        guard let photoData, let url = URL(string: photoData), url.isFileURL else {
+            return
+        }
+
+        do {
+            try FileManager.default.removeItem(at: url)
+        } catch {
+            print("Failed to delete photo \(error)")
+        }
     }
 }

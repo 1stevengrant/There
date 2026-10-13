@@ -1,4 +1,3 @@
-import PostHog
 import SwiftUI
 import UserNotifications
 
@@ -18,16 +17,19 @@ struct FormSection: View {
     var isEditing: Bool = false
     let saveEntry: () -> Void
 
+    private var canSave: Bool {
+        !city.isEmpty && selectedTimeZone != nil
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             StyledLabel(title: "Name")
             Input(text: $name, placeholder: "eg. Dena or London Office")
                 .padding(.bottom, 6)
                 .onSubmit {
-                    if !city.isEmpty {
-                        PostHogSDK.shared.capture("timezone_added")
+                    if canSave {
                         saveEntry()
-                    } else {
+                    } else if city.isEmpty {
                         withAnimation(.easeIn(duration: 0.1)) {
                             showError = true
                         }
@@ -76,18 +78,17 @@ struct FormSection: View {
             }
 
             PrimaryButton(title: isEditing ? "Update" : "Add", action: {
-                if !city.isEmpty {
+                if canSave {
                     saveEntry()
-                    PostHogSDK.shared.capture("timezone_added")
-                } else {
+                } else if city.isEmpty {
                     withAnimation(.easeIn(duration: 0.1)) {
                         showError = true
                     }
                 }
 
             })
-            .disabled(city.isEmpty)
-            .opacity(city.isEmpty ? 0.6 : 1)
+            .disabled(!canSave)
+            .opacity(canSave ? 1 : 0.6)
             .padding(.top, 8)
         }
     }

@@ -249,24 +249,29 @@ struct CitySearchResults: View {
     private func selectCity(_ result: TimeZoneSearchResult) {
         switch result.type {
         case .city:
-            selectedCity = "\(result.title), \(result.subtitle)"
+            let city = "\(result.title), \(result.subtitle)"
+            selectedCity = city
+            selectedTimezone = nil
+            countryEmoji = result.countryCode.map { Utils.shared.getCountryEmoji(for: $0) } ?? ""
 
             Task {
                 if let timezone = await result.getTimeZone() {
                     await MainActor.run {
+                        guard selectedCity == city else { return }
                         selectedTimezone = timezone
-                        let geocoder = CLGeocoder()
-                        geocoder.geocodeAddressString(result.title) { [self] placemarks, _ in
-                            if let placemark = placemarks?.first, let timezone = selectedTimezone {
-                                countryEmoji = Utils.shared.getCountryEmoji(for: placemark.isoCountryCode ?? "")
-                            }
+
+                        guard result.countryCode == nil else { return }
+
+                        CLGeocoder().geocodeAddressString(result.title) { [self] placemarks, _ in
+                            guard selectedCity == city, let countryCode = placemarks?.first?.isoCountryCode else { return }
+
+                            countryEmoji = Utils.shared.getCountryEmoji(for: countryCode)
                         }
                     }
-
-                  
                 } else {
                     await MainActor.run {
-                        fallbackToGeocoding(for: selectedCity)
+                        guard selectedCity == city else { return }
+                        fallbackToGeocoding(for: city)
                     }
                 }
             }
@@ -288,10 +293,15 @@ struct CitySearchResults: View {
     private func fallbackToGeocoding(for address: String) {
         let geocoder = CLGeocoder()
         geocoder.geocodeAddressString(address) { [self] placemarks, _ in
-            if let placemark = placemarks?.first, let timezone = placemark.timeZone {
-                selectedTimezone = timezone
-                countryEmoji = Utils.shared.getCountryEmoji(for: placemark.isoCountryCode ?? "")
+            guard selectedCity == address else { return }
+
+            guard let placemark = placemarks?.first, let timezone = placemark.timeZone else {
+                selectedCity = ""
+                return
             }
+
+            selectedTimezone = timezone
+            countryEmoji = Utils.shared.getCountryEmoji(for: placemark.isoCountryCode ?? "")
         }
     }
 

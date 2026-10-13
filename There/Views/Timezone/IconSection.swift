@@ -48,6 +48,7 @@ struct SocialMediaInput: View {
     @Binding var username: String
     @Binding var image: NSImage?
     @Binding var debounceTask: Task<Void, Never>?
+    @State private var lookupFailed = false
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -56,6 +57,7 @@ struct SocialMediaInput: View {
             Input(text: $username, placeholder: "eg. dena_sohrabi")
                 .onChange(of: username) { value in
                     debounceTask?.cancel()
+                    lookupFailed = false
 
                     if !value.isEmpty {
                         debounceTask = Task {
@@ -63,13 +65,26 @@ struct SocialMediaInput: View {
 
                             if !Task.isCancelled {
                                 do {
-                                    let imageUrl = "https://unavatar.io/\(platform.lowercased())/\(value.lowercased())"
+                                    let imageUrl = "https://unavatar.io/\(platform.lowercased())/\(value.lowercased())?fallback=false"
                                     let fetchedImage = try await simpleImageFetch(from: imageUrl)
+
+                                    guard !Task.isCancelled else {
+                                        return
+                                    }
+
                                     await MainActor.run {
-                                        self.image = NSImage(data: fetchedImage)
+                                        self.image = fetchedImage
                                     }
                                 } catch {
                                     print("Got error \(error)")
+
+                                    guard !Task.isCancelled else {
+                                        return
+                                    }
+
+                                    await MainActor.run {
+                                        lookupFailed = true
+                                    }
                                 }
                             }
                         }
@@ -77,21 +92,31 @@ struct SocialMediaInput: View {
                         image = nil
                     }
                 }
+
+            if lookupFailed {
+                Text("Couldn't find a photo for that username")
+                    .font(.caption)
+                    .foregroundColor(.red)
+                    .fontWeight(.medium)
+            }
         }
     }
 
-    func simpleImageFetch(from urlString: String) async throws -> Data {
+    func simpleImageFetch(from urlString: String) async throws -> NSImage {
         guard let url = URL(string: urlString) else {
             throw URLError(.badURL)
         }
 
         let (data, response) = try await URLSession.shared.data(from: url)
 
-        guard let httpResponse = response as? HTTPURLResponse else {
+        guard let httpResponse = response as? HTTPURLResponse, (200 ..< 300).contains(httpResponse.statusCode) else {
             throw URLError(.badServerResponse)
         }
 
-        image = NSImage(data: data)
-        return data
+        guard let image = NSImage(data: data) else {
+            throw URLError(.cannotDecodeContentData)
+        }
+
+        return image
     }
 }
