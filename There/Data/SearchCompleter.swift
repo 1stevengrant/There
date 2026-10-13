@@ -159,6 +159,9 @@ struct TimeZoneSearchResult: Identifiable, Equatable {
         switch type {
         case .city:
             print("title \(title) coordinate \(coordinate) region \(region)")
+            if let timeZone = identifier.flatMap({ TimeZone(identifier: $0) }) {
+                return timeZone
+            }
             if let coordinate = coordinate {
                 
                 return await TimeZone.timeZone(for: coordinate)
