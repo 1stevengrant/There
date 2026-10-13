@@ -34,6 +34,8 @@ extension EditTimeZoneView {
                     try entry.save(db)
                 }
             }
+
+            entry?.deletePhotoFile()
         } catch {
             print("Failed to save entry \(error)")
         }

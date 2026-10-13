@@ -93,4 +93,16 @@ struct Entry: Codable, Equatable, Identifiable, FetchableRecord, PersistableReco
     var timeIcon: String {
         return timeDifference.dayPeriod.rawValue
     }
+
+    func deletePhotoFile() {
+        guard let photoData, let url = URL(string: photoData), url.isFileURL else {
+            return
+        }
+
+        do {
+            try FileManager.default.removeItem(at: url)
+        } catch {
+            print("Failed to delete photo \(error)")
+        }
+    }
 }
