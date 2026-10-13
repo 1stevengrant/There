@@ -198,11 +198,7 @@ class SearchCompleter: ObservableObject {
     @Published var results: [TimeZoneSearchResult] = []
     @Published var queryFragment: String = "" {
         didSet {
-            if queryFragment.isEmpty {
-                results = defaultResults
-            } else {
-                updateResults(for: queryFragment)
-            }
+            updateResults(for: queryFragment)
         }
     }
 
