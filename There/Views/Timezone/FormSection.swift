@@ -1,4 +1,3 @@
-import PostHog
 import SwiftUI
 import UserNotifications
 
@@ -29,7 +28,6 @@ struct FormSection: View {
                 .padding(.bottom, 6)
                 .onSubmit {
                     if canSave {
-                        PostHogSDK.shared.capture("timezone_added")
                         saveEntry()
                     } else if city.isEmpty {
                         withAnimation(.easeIn(duration: 0.1)) {
@@ -82,7 +80,6 @@ struct FormSection: View {
             PrimaryButton(title: isEditing ? "Update" : "Add", action: {
                 if canSave {
                     saveEntry()
-                    PostHogSDK.shared.capture("timezone_added")
                 } else if city.isEmpty {
                     withAnimation(.easeIn(duration: 0.1)) {
                         showError = true

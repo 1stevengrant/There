@@ -1,66 +1,12 @@
-// InitialView.swift
-
-import PostHog
 import SwiftUI
 
 struct InitialView: View {
-    @Environment(\.database) var database
-    @State private var email: String = ""
-    @EnvironmentObject var appState: AppState
-
     var body: some View {
         HStack(spacing: 80) {
             LeftPanel()
-            RightPanel(email: $email, saveEmail: saveEmail)
+            RightPanel()
         }
         .padding()
-    }
-
-    func signupForThere(email: String, completion: @escaping (Bool) -> Void) {
-        var hostname: String {
-            #if DEBUG
-                return "http://localhost:8000"
-            #else
-                return "https://headline.inline.chat"
-            #endif
-        }
-        let url = URL(string: "\(hostname)/api/there/signup")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.timeoutInterval = 15
-
-        let timeZone = TimeZone.current.identifier
-        let body: [String: Any] = ["email": email, "timeZone": timeZone]
-
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
-
-        URLSession.shared.dataTask(with: request) { _, response, _ in
-            let success = (response as? HTTPURLResponse)?.statusCode == 200
-            DispatchQueue.main.async {
-                completion(success)
-            }
-        }.resume()
-    }
-
-    func saveEmail(completion: @escaping (Bool) -> Void) {
-        let email = email.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        signupForThere(email: email) { success in
-            guard success else {
-                print("Signup failed")
-                completion(false)
-                return
-            }
-
-            PostHogSDK.shared.capture("user_signed_up",
-                                      userProperties: ["email": email],
-                                      userPropertiesSetOnce: ["date_of_sign_up": Date.now])
-            print("Signup successful")
-            UserDefaults.standard.set(email, forKey: "userEmail")
-            UserDefaults.standard.set(true, forKey: "hasCompletedInitialSetup")
-            completion(true)
-        }
     }
 }
 

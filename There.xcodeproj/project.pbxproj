@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C3560CD82C9AADBA009C7EBA /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = C3560CD72C9AADBA009C7EBA /* PostHog */; };
 		C357E5D12C877376003F9943 /* MenuBarExtraAccess in Frameworks */ = {isa = PBXBuildFile; productRef = C357E5D02C877376003F9943 /* MenuBarExtraAccess */; };
 		C38562332C8719CB00858D54 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = C38562322C8719CB00858D54 /* GRDB */; };
 /* End PBXBuildFile section */
@@ -83,7 +82,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C38562332C8719CB00858D54 /* GRDB in Frameworks */,
-				C3560CD82C9AADBA009C7EBA /* PostHog in Frameworks */,
 				C357E5D12C877376003F9943 /* MenuBarExtraAccess in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -155,7 +153,6 @@
 			packageProductDependencies = (
 				C38562322C8719CB00858D54 /* GRDB */,
 				C357E5D02C877376003F9943 /* MenuBarExtraAccess */,
-				C3560CD72C9AADBA009C7EBA /* PostHog */,
 			);
 			productName = There;
 			productReference = C325D0D42C85A95F0049EFC8 /* There.app */;
@@ -242,7 +239,6 @@
 			packageReferences = (
 				C38562312C8719CB00858D54 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				C357E5CF2C877376003F9943 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */,
-				C3560CD32C9AACFB009C7EBA /* XCRemoteSwiftPackageReference "posthog-ios" */,
 				CD8311052C99A18A008EEF3A /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -655,14 +651,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		C3560CD32C9AACFB009C7EBA /* XCRemoteSwiftPackageReference "posthog-ios" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/PostHog/posthog-ios";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 3.0.0;
-			};
-		};
 		C357E5CF2C877376003F9943 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/orchetect/MenuBarExtraAccess";
@@ -690,11 +678,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		C3560CD72C9AADBA009C7EBA /* PostHog */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = C3560CD32C9AACFB009C7EBA /* XCRemoteSwiftPackageReference "posthog-ios" */;
-			productName = PostHog;
-		};
 		C357E5D02C877376003F9943 /* MenuBarExtraAccess */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C357E5CF2C877376003F9943 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */;

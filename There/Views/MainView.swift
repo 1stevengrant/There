@@ -1,6 +1,5 @@
 import AppKit
 import GRDB
-import PostHog
 import SwiftUI
 
 struct MainView: View {
@@ -71,10 +70,6 @@ struct MainView: View {
         }
         .onChange(of: fetcher.entries) { _ in
             sortEntries()
-        }
-        .task {
-            let id = PostHogSDK.shared.getAnonymousId()
-            PostHogSDK.shared.identify(id, userProperties: ["email": UserDefaults.standard.string(forKey: "userEmail") ?? ""])
         }
 
     }
