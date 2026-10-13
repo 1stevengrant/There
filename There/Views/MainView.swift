@@ -82,9 +82,9 @@ struct MainView: View {
     private func sortEntries() {
         switch sortOrder {
         case .timeAscending:
-            sortedEntries = fetcher.entries.sorted { $0.timeDifference.hours < $1.timeDifference.hours }
+            sortedEntries = fetcher.entries.sorted { $0.secondsFromLocal < $1.secondsFromLocal }
         case .timeDescending:
-            sortedEntries = fetcher.entries.sorted { $0.timeDifference.hours > $1.timeDifference.hours }
+            sortedEntries = fetcher.entries.sorted { $0.secondsFromLocal > $1.secondsFromLocal }
         }
     }
 
