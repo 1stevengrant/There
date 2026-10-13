@@ -28,6 +28,7 @@ struct InitialView: View {
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.timeoutInterval = 15
 
         let timeZone = TimeZone.current.identifier
         let body: [String: Any] = ["email": email, "timeZone": timeZone]
@@ -42,20 +43,23 @@ struct InitialView: View {
         }.resume()
     }
 
-    func saveEmail() {
-        signupForThere(email: email) { success in
-            if success {
-                PostHogSDK.shared.capture("user_signed_up",
-                                          userProperties: ["email": email],
-                                          userPropertiesSetOnce: ["date_of_sign_up": Date.now])
-                print("Signup successful")
-                UserDefaults.standard.set(email, forKey: "userEmail")
-                UserDefaults.standard.set(true, forKey: "hasCompletedInitialSetup")
+    func saveEmail(completion: @escaping (Bool) -> Void) {
+        let email = email.trimmingCharacters(in: .whitespacesAndNewlines)
 
-            } else {
+        signupForThere(email: email) { success in
+            guard success else {
                 print("Signup failed")
-                UserDefaults.standard.set(true, forKey: "hasCompletedInitialSetup")
+                completion(false)
+                return
             }
+
+            PostHogSDK.shared.capture("user_signed_up",
+                                      userProperties: ["email": email],
+                                      userPropertiesSetOnce: ["date_of_sign_up": Date.now])
+            print("Signup successful")
+            UserDefaults.standard.set(email, forKey: "userEmail")
+            UserDefaults.standard.set(true, forKey: "hasCompletedInitialSetup")
+            completion(true)
         }
     }
 }

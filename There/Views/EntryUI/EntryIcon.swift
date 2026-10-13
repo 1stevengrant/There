@@ -19,8 +19,6 @@ struct EntryIcon: View {
         Group {
             if let data = entry.photoData, !data.isEmpty {
                 photoIcon(data: data)
-            } else if let flag = entry.flag {
-                placeIcon
             } else {
                 defaultIcon
             }
@@ -29,26 +27,10 @@ struct EntryIcon: View {
             timeIcon
         }
         .onAppear {
-            if entry.flag == nil || entry.flag!.isEmpty {
+            if entry.flag == nil {
                 searchForFlag()
             }
         }
-    }
-
-    private var placeIcon: some View {
-        Circle()
-            .fill(backgroundColor)
-            .frame(width: 45)
-            .overlay {
-                if let flag = entry.flag {
-                    Text(flag)
-                        .font(.largeTitle)
-                } else {
-                    Image(systemName: "clock")
-                        .font(.largeTitle)
-                        .foregroundColor(.secondary)
-                }
-            }
     }
 
     private func photoIcon(data: String) -> some View {

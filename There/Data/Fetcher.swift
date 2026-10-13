@@ -28,9 +28,9 @@ class Fetcher: ObservableObject {
     func sortEntries(by order: SortOrder) {
         switch order {
         case .timeAscending:
-            entries.sort { $0.timeDifference.hours < $1.timeDifference.hours }
+            entries.sort { $0.secondsFromLocal < $1.secondsFromLocal }
         case .timeDescending:
-            entries.sort { $0.timeDifference.hours > $1.timeDifference.hours }
+            entries.sort { $0.secondsFromLocal > $1.secondsFromLocal }
         }
     }
 }

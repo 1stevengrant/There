@@ -82,19 +82,23 @@ struct MainView: View {
     private func sortEntries() {
         switch sortOrder {
         case .timeAscending:
-            sortedEntries = fetcher.entries.sorted { $0.timeDifference.hours < $1.timeDifference.hours }
+            sortedEntries = fetcher.entries.sorted { $0.secondsFromLocal < $1.secondsFromLocal }
         case .timeDescending:
-            sortedEntries = fetcher.entries.sorted { $0.timeDifference.hours > $1.timeDifference.hours }
+            sortedEntries = fetcher.entries.sorted { $0.secondsFromLocal > $1.secondsFromLocal }
         }
     }
 
     private func deleteEntry(_ entry: Entry) {
         Task {
             do {
-                try await database.dbWriter.write { db in
+                let deletedEntry = try await database.dbWriter.write { db in
                     let fetchedEntry = try Entry.fetchOne(db, id: entry.id)
                     try fetchedEntry?.delete(db)
+
+                    return fetchedEntry
                 }
+
+                deletedEntry?.deletePhotoFile()
             } catch {
                 print("Can't delete entry \(error)")
             }

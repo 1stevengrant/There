@@ -124,7 +124,8 @@ class TimeZoneSearchCompiler: NSObject {
                 identifier: placemark.timeZone?.identifier,
                 type: .city,
                 region: placemark.region,
-                coordinate: placemark.location
+                coordinate: placemark.location,
+                countryCode: placemark.isoCountryCode
             )
         }
     }
@@ -154,11 +155,15 @@ struct TimeZoneSearchResult: Identifiable, Equatable {
     let type: TimeZoneSearchResultType
     let region: CLRegion?
     let coordinate: CLLocation?
+    var countryCode: String? = nil
 
     func getTimeZone() async  -> TimeZone? {
         switch type {
         case .city:
             print("title \(title) coordinate \(coordinate) region \(region)")
+            if let timeZone = identifier.flatMap({ TimeZone(identifier: $0) }) {
+                return timeZone
+            }
             if let coordinate = coordinate {
                 
                 return await TimeZone.timeZone(for: coordinate)
@@ -198,11 +203,7 @@ class SearchCompleter: ObservableObject {
     @Published var results: [TimeZoneSearchResult] = []
     @Published var queryFragment: String = "" {
         didSet {
-            if queryFragment.isEmpty {
-                results = defaultResults
-            } else {
-                updateResults(for: queryFragment)
-            }
+            updateResults(for: queryFragment)
         }
     }
 

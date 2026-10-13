@@ -46,6 +46,16 @@ struct Entry: Codable, Equatable, Identifiable, FetchableRecord, PersistableReco
         case id, type, name, city, timezoneIdentifier, flag, photoData
     }
 
+    var secondsFromLocal: Int {
+        guard let entryTimeZone = TimeZone(identifier: timezoneIdentifier) else {
+            return 0
+        }
+
+        let currentDate = Date()
+
+        return entryTimeZone.secondsFromGMT(for: currentDate) - TimeZone.current.secondsFromGMT(for: currentDate)
+    }
+
     var timeDifference: (hours: Int, minutes: Int, dayPeriod: DayPeriod) {
         let currentDate = Date()
         let calendar = Calendar.current
@@ -92,5 +102,17 @@ struct Entry: Codable, Equatable, Identifiable, FetchableRecord, PersistableReco
 
     var timeIcon: String {
         return timeDifference.dayPeriod.rawValue
+    }
+
+    func deletePhotoFile() {
+        guard let photoData, let url = URL(string: photoData), url.isFileURL else {
+            return
+        }
+
+        do {
+            try FileManager.default.removeItem(at: url)
+        } catch {
+            print("Failed to delete photo \(error)")
+        }
     }
 }
