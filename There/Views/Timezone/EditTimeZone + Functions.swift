@@ -29,7 +29,7 @@ extension EditTimeZoneView {
                         city: city,
                         timezoneIdentifier: selectedTimeZone?.identifier ?? "",
                         flag: image == nil ? countryEmoji : "",
-                        photoData: fileURL.absoluteString
+                        photoData: image != nil ? fileURL.absoluteString : nil
                     )
                     try entry.save(db)
                 }
