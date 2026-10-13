@@ -103,8 +103,9 @@ struct EntryRow: View {
         }
 
         let totalHours = Double(hours) + Double(minutes) / 60.0
+        let format = minutes % 30 == 0 ? "%+.1f hrs" : "%+.2f hrs"
 
-        return String(format: "%+.1f hrs", totalHours)
+        return String(format: format, totalHours)
     }
 
     private func updateTimer(for phase: ScenePhase) {
