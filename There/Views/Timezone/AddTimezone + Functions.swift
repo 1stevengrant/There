@@ -1,6 +1,7 @@
 import AppKit
 import CoreLocation
 import Foundation
+import GRDB
 import MapKit
 import SwiftUI
 
@@ -41,8 +42,9 @@ extension AddTimezone {
 
         do {
             try database.dbWriter.write { db in
+                let lastId = try Entry.select(GRDB.max(Entry.Columns.id), as: Int64.self).fetchOne(db) ?? 0
                 let entry = Entry(
-                    id: Int64.random(in: 1 ... 99999),
+                    id: lastId + 1,
                     type: !countryEmoji.isEmpty && image == nil ? .place : .person,
                     name: name,
                     city: city,
@@ -51,7 +53,7 @@ extension AddTimezone {
                     photoData: image != nil ? fileURL.absoluteString : nil
                 )
 
-                try entry.save(db)
+                try entry.insert(db)
             }
         } catch {
             print("Failed to save entry \(error)")
