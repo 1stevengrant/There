@@ -43,8 +43,8 @@ struct ThereApp: App {
                 }
                 .foregroundColor(.primary)
         }
-        .menuBarExtraStyle(.window)
         .menuBarExtraAccess(isPresented: $appState.menuBarViewIsPresented)
+        .menuBarExtraStyle(.window)
         .windowResizability(.contentSize)
 
         WindowGroup("init", id: "init") {

@@ -240,9 +240,9 @@
 			mainGroup = C325D0CB2C85A95F0049EFC8;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				C38562312C8719CB00858D54 /* XCLocalSwiftPackageReference "../../Downloads/GRDB.swift-master" */,
-				C357E5CF2C877376003F9943 /* XCLocalSwiftPackageReference "../../Downloads/MenuBarExtraAccess-main" */,
-				C3560CD32C9AACFB009C7EBA /* XCLocalSwiftPackageReference "../../Downloads/posthog-ios-main" */,
+				C38562312C8719CB00858D54 /* XCRemoteSwiftPackageReference "GRDB.swift" */,
+				C357E5CF2C877376003F9943 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */,
+				C3560CD32C9AACFB009C7EBA /* XCRemoteSwiftPackageReference "posthog-ios" */,
 				CD8311052C99A18A008EEF3A /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -654,22 +654,31 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		C3560CD32C9AACFB009C7EBA /* XCLocalSwiftPackageReference "../../Downloads/posthog-ios-main" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../Downloads/posthog-ios-main";
-		};
-		C357E5CF2C877376003F9943 /* XCLocalSwiftPackageReference "../../Downloads/MenuBarExtraAccess-main" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../Downloads/MenuBarExtraAccess-main";
-		};
-		C38562312C8719CB00858D54 /* XCLocalSwiftPackageReference "../../Downloads/GRDB.swift-master" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../Downloads/GRDB.swift-master";
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
+		C3560CD32C9AACFB009C7EBA /* XCRemoteSwiftPackageReference "posthog-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/PostHog/posthog-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+		C357E5CF2C877376003F9943 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/orchetect/MenuBarExtraAccess";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		C38562312C8719CB00858D54 /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.29.3;
+			};
+		};
 		CD8311052C99A18A008EEF3A /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
@@ -683,15 +692,17 @@
 /* Begin XCSwiftPackageProductDependency section */
 		C3560CD72C9AADBA009C7EBA /* PostHog */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C3560CD32C9AACFB009C7EBA /* XCLocalSwiftPackageReference "../../Downloads/posthog-ios-main" */;
+			package = C3560CD32C9AACFB009C7EBA /* XCRemoteSwiftPackageReference "posthog-ios" */;
 			productName = PostHog;
 		};
 		C357E5D02C877376003F9943 /* MenuBarExtraAccess */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = C357E5CF2C877376003F9943 /* XCRemoteSwiftPackageReference "MenuBarExtraAccess" */;
 			productName = MenuBarExtraAccess;
 		};
 		C38562322C8719CB00858D54 /* GRDB */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = C38562312C8719CB00858D54 /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
 		};
 /* End XCSwiftPackageProductDependency section */
