@@ -124,7 +124,8 @@ class TimeZoneSearchCompiler: NSObject {
                 identifier: placemark.timeZone?.identifier,
                 type: .city,
                 region: placemark.region,
-                coordinate: placemark.location
+                coordinate: placemark.location,
+                countryCode: placemark.isoCountryCode
             )
         }
     }
@@ -154,6 +155,7 @@ struct TimeZoneSearchResult: Identifiable, Equatable {
     let type: TimeZoneSearchResultType
     let region: CLRegion?
     let coordinate: CLLocation?
+    var countryCode: String? = nil
 
     func getTimeZone() async  -> TimeZone? {
         switch type {

@@ -252,21 +252,22 @@ struct CitySearchResults: View {
             let city = "\(result.title), \(result.subtitle)"
             selectedCity = city
             selectedTimezone = nil
+            countryEmoji = result.countryCode.map { Utils.shared.getCountryEmoji(for: $0) } ?? ""
 
             Task {
                 if let timezone = await result.getTimeZone() {
                     await MainActor.run {
                         guard selectedCity == city else { return }
                         selectedTimezone = timezone
-                        let geocoder = CLGeocoder()
-                        geocoder.geocodeAddressString(result.title) { [self] placemarks, _ in
-                            if let placemark = placemarks?.first, let timezone = selectedTimezone {
-                                countryEmoji = Utils.shared.getCountryEmoji(for: placemark.isoCountryCode ?? "")
-                            }
+
+                        guard result.countryCode == nil else { return }
+
+                        CLGeocoder().geocodeAddressString(result.title) { [self] placemarks, _ in
+                            guard selectedCity == city, let countryCode = placemarks?.first?.isoCountryCode else { return }
+
+                            countryEmoji = Utils.shared.getCountryEmoji(for: countryCode)
                         }
                     }
-
-                  
                 } else {
                     await MainActor.run {
                         guard selectedCity == city else { return }
