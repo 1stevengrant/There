@@ -3,7 +3,6 @@ import SwiftUI
 struct SettingsButton: View {
     @State private var settingsHovered: Bool = false
     @Environment(\.openWindow) var openWindow
-    @Environment(\.openURL) var openURL
     @EnvironmentObject var appState: AppState
     @Environment(\.database) var database: AppDatabase
     @Environment(\.colorScheme) var scheme
@@ -34,25 +33,6 @@ struct SettingsButton: View {
                 }
             ))
 
-            Section("Support") {
-                Button("DM on X") {
-                    openURL(URL(string: "https://twitter.com/messages/compose?recipient_id=1434101346110689282")!)
-                }
-                Button("Email Us") {
-                    openAppleMailComposer(to: "support@there.pm",
-                                          subject: "Support Request",
-                                          body: "Hello, I need assistance with...")
-                }
-            }
-            Section {
-                Button("Open Website") {
-                    openURL(URL(string: "https://there.pm")!)
-                }
-                Button("Follow on X") {
-                    openURL(URL(string: "https://x.com/ThereHQ")!)
-                }
-            }
-
             #if targetEnvironment(simulator) || DEBUG
                 Section("Dev & Debug") {
                     Button("Clear Cache & Data") {
@@ -81,44 +61,7 @@ struct SettingsButton: View {
         .buttonStyle(SettingsButtonStyle())
     }
 
-    func openAppleMailComposer(to recipient: String, subject: String? = nil, body: String? = nil) {
-        let appleMailBundleIdentifier = "com.apple.mail"
 
-        guard let appleMailURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: appleMailBundleIdentifier) else {
-            print("Apple Mail not found")
-            return
-        }
-
-        var components = URLComponents()
-        components.scheme = "mailto"
-        components.path = recipient
-
-        var queryItems = [URLQueryItem]()
-        if let subject = subject {
-            queryItems.append(URLQueryItem(name: "subject", value: subject))
-        }
-        if let body = body {
-            queryItems.append(URLQueryItem(name: "body", value: body))
-        }
-
-        if !queryItems.isEmpty {
-            components.queryItems = queryItems
-        }
-
-        guard let emailURL = components.url else {
-            print("Invalid email URL")
-            return
-        }
-
-        let configuration = NSWorkspace.OpenConfiguration()
-        configuration.activates = true
-
-        NSWorkspace.shared.open([emailURL], withApplicationAt: appleMailURL, configuration: configuration) { _, error in
-            if let error = error {
-                print("Failed to open Apple Mail: \(error.localizedDescription)")
-            }
-        }
-    }
 }
 
 #Preview {
